@@ -26,67 +26,68 @@ import javax.swing.JTextField;
  *
  * @author williaman.corgar
  */
-public class PrincipalChat extends JFrame{
-    
+public class PrincipalChat extends JFrame {
+
     public JTextField campoTexto;
     public JTextArea areaTexto;
     private static Socket cliente;
-    private static String ip="127.0.0.1";
-    
+    private static String ip = "127.0.0.1";
+
     public static PrincipalChat main;
-    
-    public PrincipalChat(){
+
+    public PrincipalChat() {
         super("Cliente");
-        campoTexto=new JTextField();
+        campoTexto = new JTextField();
         campoTexto.setEditable(false);
-        add(campoTexto,BorderLayout.NORTH);
-        
-        areaTexto=new JTextArea();
+        add(campoTexto, BorderLayout.NORTH);
+
+        areaTexto = new JTextArea();
         areaTexto.setEditable(false);
-        add(new JScrollPane(areaTexto),BorderLayout.CENTER);
+        add(new JScrollPane(areaTexto), BorderLayout.CENTER);
         areaTexto.setBackground(Color.ORANGE);
         areaTexto.setForeground(Color.BLACK);
         campoTexto.setForeground(Color.BLACK);
-        
-        JMenu menuArchivo=new JMenu("Archivo");
-        JMenuItem salir=new JMenuItem("Salir");
+
+        JMenu menuArchivo = new JMenu("Archivo");
+        JMenuItem salir = new JMenuItem("Salir");
         menuArchivo.add(salir);
-        JMenuBar barra=new JMenuBar();
+        JMenuBar barra = new JMenuBar();
         setJMenuBar(barra);
         barra.add(menuArchivo);
-        
-        salir.addActionListener(new ActionListener(){
-            public void actionPerformed(ActionEvent e){
+
+        salir.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
                 System.exit(0);
             }
         });
-        setSize(300,320);
+        setSize(300, 320);
         setVisible(true);
     }
-    
-    public void mostrarMensaje(String mensaje){
-        areaTexto.append(mensaje+"\n");
+
+    public void mostrarMensaje(String mensaje) {
+        areaTexto.append(mensaje + "\n");
     }
-    public void habilitarTexto(boolean editable){
+
+    public void habilitarTexto(boolean editable) {
         campoTexto.setEditable(editable);
     }
-    
+
     public static void main(String[] args) {
-        PrincipalChat main=new PrincipalChat();
+        PrincipalChat main = new PrincipalChat();
         main.setLocationRelativeTo(null);
         main.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        ExecutorService executor=Executors.newCachedThreadPool();
+        ExecutorService executor = Executors.newCachedThreadPool();
         try {
             main.mostrarMensaje("Buscando servidor ...");
-            cliente= new Socket(InetAddress.getByName(ip),1111);
-            main.mostrarMensaje("Conectado a : "+cliente.getInetAddress().getHostAddress());
+            cliente = new Socket(InetAddress.getByName(ip), 1111);
+            main.mostrarMensaje("Conectado a : " + cliente.getInetAddress().getHostAddress());
             main.habilitarTexto(true);
             executor.execute(new ThreadRecibe(main, cliente));
             executor.execute(new ThreadEnvia(main, cliente));
         } catch (IOException ex) {
-            
+
         }
         executor.shutdown();
     }
-    
+
 }
